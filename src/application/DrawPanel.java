@@ -106,7 +106,7 @@ public class DrawPanel extends JPanel {
 			break;
 
 		case RHOMBUS:
-			newFigure = new Rhombus(pointBuffer.get(0), pointBuffer.get(1));
+			newFigure = new Rhombus(pointBuffer);
 			break;
 
 		case ELLIPSE:
@@ -118,11 +118,11 @@ public class DrawPanel extends JPanel {
 			break;
 
 		case RECTANGLE:
-			newFigure = new Rectangle(pointBuffer.get(0), pointBuffer.get(1));
+			newFigure = new Rectangle(pointBuffer);
 			break;
 
 		case REGULARPOLYGON:
-			newFigure = new RegularPolygon(pointBuffer.get(0), pointBuffer.get(1), n);
+			newFigure = new RegularPolygon(pointBuffer, n);
 			break;
 
 		case POLYLINE:

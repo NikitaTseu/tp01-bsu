@@ -22,22 +22,51 @@ public class CustomPolygon extends Shape {
 		setPointArrays();
 	}
 
-	private void setPointArrays() {
-		xpoints = new int[n + 1];
-		ypoints = new int[n + 1];
+	protected void setPointArrays() {
+		xpoints = new int[n + 10];
+		ypoints = new int[n + 10];
 
 		for (int i = 0; i < n; i++) {
 			xpoints[i] = points.get(i).x;
 			ypoints[i] = points.get(i).y;
 		}
-		
-		xpoints[n] = points.get(0).x;
-		ypoints[n] = points.get(0).y;
 	}
 	
+	public List<Point> getPoints() {
+		return points;
+	}
+
+	public void setPoints(List<Point> points) {
+		this.points = points;
+	}
+
+	public int[] getXpoints() {
+		return xpoints;
+	}
+
+	public void setXpoints(int[] xpoints) {
+		this.xpoints = xpoints;
+	}
+
+	public int[] getYpoints() {
+		return ypoints;
+	}
+
+	public void setYpoints(int[] ypoints) {
+		this.ypoints = ypoints;
+	}
+
+	public int getN() {
+		return n;
+	}
+
+	public void setN(int n) {
+		this.n = n;
+	}
+
 	@Override
 	public void move(Point p) {
-		for (int i = 0; i < n + 1; i++) {
+		for (int i = 0; i < n; i++) {
 			xpoints[i] += getDelta(p).x;
 			ypoints[i] += getDelta(p).y;
 		}

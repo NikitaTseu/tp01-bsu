@@ -4,17 +4,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class Palette extends JFrame {
 
 	private MenuBar menuBar;
 	private Menu chooseFigure, chooseColor;
-	private MenuItem line, polygon, circle, ellipse, lineSegment, ray, customPolygon, polyLine, rectangle, rhombus,
-			regularPolygon;
 	private MenuItem backgroundColor, borderColor;
 	private Color bgColor = Color.PINK, brColor = Color.BLACK;
 	private DrawPanel drawPanel;
+	
+	private Map<String, FigureType> names = new HashMap<String, FigureType>()
+	{{
+		for(FigureType ft: FigureType.values()) {
+			put(ft.getMenu(), ft);
+		}
+	}};
 
 	private FigureType figureType = FigureType.LINESEGMENT;
 
@@ -32,19 +39,12 @@ public class Palette extends JFrame {
 
 		menuBar = new MenuBar();
 		mainPalette.setMenuBar(menuBar);
-		chooseFigure = new Menu("Choose figure");
-		chooseFigure.add(lineSegment = new MenuItem("Line segment"));
-		chooseFigure.add(ray = new MenuItem("Ray"));
-		chooseFigure.add(line = new MenuItem("Line"));
-		chooseFigure.add(circle = new MenuItem("Circle"));
-		chooseFigure.add(ellipse = new MenuItem("Ellipse"));
-		chooseFigure.add(polygon = new MenuItem("Regular polygon"));
-		chooseFigure.add(customPolygon = new MenuItem("Custom polygon"));
-		chooseFigure.add(polyLine = new MenuItem("Polyline"));
-		chooseFigure.add(rectangle = new MenuItem("Rectangle"));
-		chooseFigure.add(rhombus = new MenuItem("Rhombus"));
-		chooseFigure.add(regularPolygon = new MenuItem("Triangle"));
 
+		chooseFigure = new Menu("Choose figure");
+		for(FigureType ft: FigureType.values()) {
+			chooseFigure.add(new MenuItem(ft.getMenu()));
+		}
+		
 		chooseColor = new Menu("Choose color");
 		chooseColor.add(backgroundColor = new MenuItem("Background Color"));
 		chooseColor.add(borderColor = new MenuItem("Border Color"));
@@ -75,76 +75,25 @@ public class Palette extends JFrame {
 
 	ActionListener figureListener = new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
+			FigureType ft = names.get(event.getActionCommand());
 			drawPanel.clearPointBuffer();
-			int n = -1;
-			switch (event.getActionCommand()) {
-			case "Line":
-				figureType = FigureType.LINE;
-				drawPanel.setBufferLimit(2);
-				break;
-
-			case "Custom polygon":
-				n = getN(3);
-				if (n > 0) {
-					figureType = FigureType.CUSTOMPOLYGON;
-					drawPanel.setBufferLimit(n);
+			
+			if(ft.needN) {
+				int tmpn = getN(ft.defN);
+				if (tmpn >= ft.defN) {
+					figureType = ft;
+					drawPanel.setN(tmpn);
+					if(ft.bflim == -1) {
+						drawPanel.setBufferLimit(tmpn);
+					}
+					else {
+						drawPanel.setBufferLimit(ft.bflim);
+					}
 				}
-				break;
-
-			case "Polyline":
-				n = getN(3);
-				if (n > 0) {
-					figureType = FigureType.POLYLINE;
-					drawPanel.setBufferLimit(n);
-				}
-				break;
-
-			case "Rectangle":
-				figureType = FigureType.RECTANGLE;
-				drawPanel.setBufferLimit(2);
-				break;
-
-			case "Rhombus":
-				figureType = FigureType.RHOMBUS;
-				drawPanel.setBufferLimit(2);
-				break;
-
-			case "Regular polygon":
-				n = getN(3);
-				if (n > 0) {
-					figureType = FigureType.REGULARPOLYGON;
-					drawPanel.setN(n);
-				}
-				break;
-
-			case "Line segment":
-				figureType = FigureType.LINESEGMENT;
-				drawPanel.setBufferLimit(2);
-				break;
-
-			case "Ray":
-				figureType = FigureType.RAY;
-				drawPanel.setBufferLimit(2);
-				break;
-
-			case "Circle":
-				figureType = FigureType.CIRCLE;
-				drawPanel.setBufferLimit(2);
-				break;
-
-			case "Ellipse":
-				figureType = FigureType.ELLIPSE;
-				drawPanel.setBufferLimit(2);
-				break;
-
-			case "Triangle":
-				figureType = FigureType.TRIANGLE;
-				drawPanel.setBufferLimit(3);
-				break;
-
-			default:
-				figureType = FigureType.LINESEGMENT;
-				drawPanel.setBufferLimit(2);
+			}
+			else {
+				figureType = ft;
+				drawPanel.setBufferLimit(ft.bflim);
 			}
 		}
 	};

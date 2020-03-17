@@ -1,5 +1,6 @@
 package figures;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.Ellipse2D;
@@ -54,5 +55,11 @@ public class PolyLine extends Figure {
 		Ellipse2D area = new Ellipse2D.Double(this.getLocation().x - 3, this.getLocation().y - 3, 6, 6);
 		return area.contains(p);
 	};
-
+	
+	@Override
+	public void setBorderColor(Color borderColor) {
+		for (LineSegment edge : edges) {
+			edge.setBorderColor(borderColor);
+		}
+	}
 }
